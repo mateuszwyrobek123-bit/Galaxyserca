@@ -1,0 +1,36 @@
+name: GalaxySerca
+version: ${project.version}
+main: pl.galaxy.serca.GalaxySerca
+api-version: '1.21'
+author: Galaxy
+description: System serc z sklepem GUI
+
+commands:
+  wyplacserca:
+    description: Wypłaca jedno serce
+    aliases: [wyplacserce]
+    permission: galaxyserca.withdraw
+  galaxyserca-gui:
+    description: Panel admina z sercami
+    permission: galaxyserca.admin
+  galaxyserca-reload:
+    description: Przeładowuje konfigurację
+    permission: galaxyserca.reload
+  galaxyserca-give:
+    description: Daje serca graczowi
+    usage: /galaxyserca-give <normal|anarchic> [ilosc] [gracz]
+    permission: galaxyserca.give
+
+permissions:
+  galaxyserca.admin:
+    description: Pełny dostęp admina (darmowe serca w GUI, reload, give)
+    default: op
+    children:
+      galaxyserca.reload: true
+      galaxyserca.give: true
+  galaxyserca.withdraw:
+    default: true
+  galaxyserca.reload:
+    default: op
+  galaxyserca.give:
+    default: op

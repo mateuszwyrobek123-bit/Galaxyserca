@@ -1,0 +1,82 @@
+# GalaxySerca - konfiguracja
+# 1 "serce" = 1 punkt maksymalnego zdrowia (tak jak w skrypcie)
+
+settings:
+  min-withdraw-health: 10     # nie można wypłacić, jeśli max zdrowie <= tej wartości
+  normal-limit: 30            # limit zwykłych serc
+  anarchic-limit: 40          # limit anarchicznych serc
+
+hearts:
+  normal:
+    name: "&4&lDodatkowe serce"
+    lore:
+      - " &8» &7Kliknij PRAWYM, aby je wykorzystać!"
+    custom-model-data: 1
+  anarchic:
+    name: "&4&lAnarchiczne serce"
+    lore:
+      - " &8» &7To &cserce &7możesz użyć poza limitem &c30 serc&7."
+      - " &8» &7Maksymalnie możesz uzyskać &f40 serduszek&7!"
+    custom-model-data: 4
+
+death:
+  enabled: true
+  lightning: true
+  lose-health: 1
+  # Tryb ochrony: true = gracz mający "threshold" serc lub mniej (domyślnie do 30 włącznie)
+  # NIE traci serc po śmierci (i nie wypada mu serce). Tracą tylko ci, którzy mają więcej (anarchiczne).
+  # false = serca tracą wszyscy.
+  no-loss-below:
+    enabled: true
+    threshold: 30
+  drop-heart: true
+  ban-command: "tempban %player% 12h brak serc!"   # wymaga pluginu z /tempban (np. EssentialsX)
+  reset-health-after-ban: 10
+
+sounds:
+  success: "entity.villager.celebrate"
+  fail: "entity.villager.no"
+
+messages:
+  prefix: "&8[&bGalaxySerca&8] "
+  only-player: "&cTa komenda jest tylko dla graczy!"
+  no-permission: "&cNie masz permisji!"
+  reloaded: "&aPrzeładowano konfigurację!"
+  usage-give: "&cUżycie: /galaxyserca-give <normal|anarchic> [ilosc] [gracz]"
+  player-not-found: "&cNie znaleziono gracza!"
+  given: "&aDano &f{amount}x {type} &adla &f{player}&a."
+  withdraw-not-enough: "&cBrak wystarczającej ilości serc do wypłaty! &f(Minimum {min})"
+  withdraw-no-space: "&cNie masz miejsca w ekwipunku!"
+  withdraw-success: "&aWypłacono jedno serce!"
+  # tytuły (subtitle)
+  heart-used: "&7Otrzymales &f+ 1 serce&7!"
+  limit-reached: "&7Nie możesz tego używać! Limit serc wynosi &f{limit}"
+  purchase-success: "&aOtrzymano serce!"
+  purchase-fail: "&7Nie posiadasz wystarczajaco serc! &f/wyplacserce"
+  purchase-error: "&cBłąd konfiguracji przedmiotu!"
+  heart-blocked: "&cSerc nie można tu używać!"
+
+# GUI dla adminów (/galaxyserca-gui) - kliknięcie serca daje je do ekwipunku.
+# Nie ma tu żadnego sklepu ani kosztów.
+shop:
+  title: "&8GalaxySerca &7- panel admina"
+  rows: 3
+  back-button:
+    enabled: false
+  items:
+    serce_zwykle:
+      slot: 11
+      cost: 0
+      type: HEART
+      permission: galaxyserca.admin
+      footer:
+        - ""
+        - " &8» &aKliknij &2LEWYM&a, aby odebrać!"
+    serce_anarchiczne:
+      slot: 15
+      cost: 0
+      type: ANARCHIC_HEART
+      permission: galaxyserca.admin
+      footer:
+        - ""
+        - " &8» &aKliknij &2LEWYM&a, aby odebrać!"
