@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Uloz pliki w foldery
+        run: |
+          mkdir -p src/main/java/pl/galaxy/serca src/main/resources
+          mv -f ./*.java src/main/java/pl/galaxy/serca/ || true
+          mv -f config.yml src/main/resources/ || true
+          mv -f plugin.yml src/main/resources/ || true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - run: mvn -B package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GalaxySerca
+          path: target/GalaxySerca-*.jar
