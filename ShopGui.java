@@ -149,6 +149,6 @@ public final class ShopGui {
     }
 
     private void closeNextTick(Player p) {
-        Bukkit.getScheduler().runTask(plugin, p::closeInventory);
+        Bukkit.getScheduler().runTask(plugin, (Runnable) p::closeInventory);
     }
 }
