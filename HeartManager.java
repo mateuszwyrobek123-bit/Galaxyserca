@@ -88,29 +88,32 @@ public final class HeartManager extends PlaceholderExpansion {
         if (p.getHealth() > a.getValue()) p.setHealth(a.getValue());
     }
 
-    // --- Dynamiczne użycie serca z uwzględnieniem limitu ---
+    // --- Dynamiczne użycie serca z uwzględnieniem limitu z configu ---
     public boolean useHeart(Player player, ItemStack item) {
         HeartType type = typeOf(item);
         if (type == null) return false;
 
-        int currentHearts = (int) (getMax(player) / 2.0);
+        double currentHealth = getMax(player);
+        int currentHearts = (int) (currentHealth / 2.0);
         int maxLimit = limit(type);
 
         if (currentHearts >= maxLimit) {
-            player.sendMessage(Text.parse(plugin.getConfig().getString("messages.max-limit", "&cMasz już maksymalną liczbę serc!")));
+            String msg = plugin.getConfig().getString("messages.limit-reached", "&7Nie możesz tego używać! Limit serc wynosi &f{limit}");
+            player.sendMessage(Text.parse(msg.replace("{limit}", String.valueOf(maxLimit))));
             return false;
         }
 
-        // Pojedyncze serce dodaje dokładnie 1 serduszko (2 punkty HP)
-        int addAmount = 1; 
-        int newHearts = Math.min(currentHearts + addAmount, maxLimit);
+        // 1 użycie przedmiotu daje dokładnie 1 pełne serce (2 punkty zdrowia)
+        int addHearts = 1; 
+        int newHearts = Math.min(currentHearts + addHearts, maxLimit);
         
         setMax(player, newHearts * 2.0);
 
         // Usuwamy 1 sztukę z ręki
         item.setAmount(item.getAmount() - 1);
         
-        player.sendMessage(Text.parse("&aPomyślnie użyto serca! Aktualne serca: &e" + newHearts + "/" + maxLimit));
+        String successMsg = plugin.getConfig().getString("messages.heart-used", "&7Otrzymales &f+ 1 serce&7!");
+        player.sendMessage(Text.parse(successMsg));
         return true;
     }
 
