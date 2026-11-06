@@ -1,60 +1,74 @@
 package pl.galaxy.serca;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
+public final class HeartListener implements Listener {
 
-public final class ShopGui {
     private final GalaxySerca plugin;
 
-    public ShopGui(GalaxySerca plugin) {
+    public HeartListener(GalaxySerca plugin) {
         this.plugin = plugin;
     }
 
-    public static final class Holder implements InventoryHolder {
-        private final Map<Integer, HeartType> slots = new HashMap<>();
-        private Inventory inventory;
-
-        public Map<Integer, HeartType> slots() { return slots; }
-        @Override public Inventory getInventory() { return inventory; }
-    }
-
-    public void open(Player p) {
-        Holder holder = new Holder();
-        Inventory inv = Bukkit.createInventory(holder, 27, Text.parse("&8Panel Zarządzania Sercami"));
-        holder.inventory = inv;
-
-        // Slot 11: Zwykłe serce (id: 1)
-        ItemStack normalHeart = plugin.hearts().create(HeartType.NORMAL, 1);
-        inv.setItem(11, normalHeart);
-        holder.slots.put(11, HeartType.NORMAL);
-
-        // Slot 15: Anarchiczne serce (id: 2)
-        ItemStack anarchicHeart = plugin.hearts().create(HeartType.ANARCHIC, 1);
-        inv.setItem(15, anarchicHeart);
-        holder.slots.put(15, HeartType.ANARCHIC);
-
-        p.openInventory(inv);
-    }
-
-    public void handleClick(Player p, int slot, Holder holder) {
-        HeartType type = holder.slots().get(slot);
-        if (type == null) return;
-
-        // Tworzymy serce wybranego typu i dodajemy bezpośrednio do ekwipunku gracza
-        ItemStack heartItem = plugin.hearts().create(type, 1);
-        Map<Integer, ItemStack> left = p.getInventory().addItem(heartItem);
-        
-        // Jeśli ekwipunek jest pełny, upuść na ziemię
-        for (ItemStack it : left.values()) {
-            p.getWorld().dropItemNaturally(p.getLocation(), it);
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && 
+            event.getAction() != Action.RIGHT_CLICK_AIR) {
+            return;
         }
 
-        plugin.sound(p, "success");
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        HeartManager hm = plugin.hearts();
+        HeartType type = hm.typeOf(item);
+
+        if (type == null) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        double currentMaxHP = hm.getMax(player);
+        int currentHearts = (int) (currentMaxHP / 2.0);
+        
+        int normalLimit = hm.limit(HeartType.NORMAL);     // 30
+        int anarchicLimit = hm.limit(HeartType.ANARCHIC); // 40
+
+        // Zwykłe serce (id: 1)
+        if (type == HeartType.NORMAL) {
+            if (currentHearts >= normalLimit) {
+                plugin.subtitle(player, "limit-reached");
+                plugin.sound(player, "fail");
+                return;
+            }
+        }
+        // Anarchiczne serce (id: 2)
+        else if (type == HeartType.ANARCHIC) {
+            if (currentHearts < normalLimit) {
+                plugin.subtitle(player, "heart-blocked");
+                plugin.sound(player, "fail");
+                return;
+            }
+            if (currentHearts >= anarchicLimit) {
+                plugin.subtitle(player, "limit-reached");
+                plugin.sound(player, "fail");
+                return;
+            }
+        }
+
+        // Zabieramy 1 sztukę przedmiotu z ekwipunku
+        item.setAmount(item.getAmount() - 1);
+
+        // Dodajemy równe 1 całe serce = 2 punkty zdrowia (HP)
+        hm.setMax(player, currentMaxHP + 2.0);
+
+        plugin.subtitle(player, "heart-used");
+        plugin.sound(player, "success");
     }
 }
