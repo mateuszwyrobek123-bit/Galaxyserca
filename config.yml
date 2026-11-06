@@ -2,9 +2,9 @@
 # 1 "serce" = 1 punkt maksymalnego zdrowia (tak jak w skrypcie)
 
 settings:
-  min-withdraw-health: 10      # nie można wypłacić, jeśli max zdrowie <= tej wartości
-  normal-limit: 30             # limit zwykłych serc
-  anarchic-limit: 40           # limit anarchicznych serc
+  min-withdraw-health: 10
+  normal-limit: 30
+  anarchic-limit: 40
 
 hearts:
   normal:
