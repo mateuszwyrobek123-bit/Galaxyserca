@@ -46,7 +46,7 @@ public final class ShopGui {
         HeartType type = holder.slots().get(slot);
         if (type == null) return;
 
-        // Tworzymy wybrane serce i dajemy bezpośrednio do ekwipunku gracza
+        // Tworzymy serce wybranego typu i dodajemy bezpośrednio do ekwipunku gracza
         ItemStack heartItem = plugin.hearts().create(type, 1);
         Map<Integer, ItemStack> left = p.getInventory().addItem(heartItem);
         
