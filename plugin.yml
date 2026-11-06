@@ -22,12 +22,10 @@ commands:
     permission: galaxyserca.give
   setserca:
     description: Ustawia liczbę serc gracza
-    aliases: [galaxyserca-set, serca-set]
     usage: /setserca <gracz> <serca>
     permission: galaxyserca.admin
   resetserca:
     description: Resetuje serca gracza lub wszystkich
-    aliases: [galaxyserca-reset, reset-serc]
     usage: /resetserca <gracz|all>
     permission: galaxyserca.admin
 
