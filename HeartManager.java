@@ -107,6 +107,37 @@ public final class HeartManager extends PlaceholderExpansion {
         }
     }
 
+    // --- METODY WYMAGANE PRZEZ SHOPGUI ---
+
+    public int count(@NotNull Player player, @NotNull HeartType type) {
+        int count = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (isHeart(item) && typeOf(item) == type) {
+                count += item.getAmount();
+            }
+        }
+        return count;
+    }
+
+    public void remove(@NotNull Player player, @NotNull HeartType type, int amount) {
+        int remaining = amount;
+        ItemStack[] contents = player.getInventory().getContents();
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack item = contents[i];
+            if (isHeart(item) && typeOf(item) == type) {
+                int stackAmount = item.getAmount();
+                if (stackAmount <= remaining) {
+                    remaining -= stackAmount;
+                    player.getInventory().setItem(i, null);
+                } else {
+                    item.setAmount(stackAmount - remaining);
+                    remaining = 0;
+                }
+                if (remaining <= 0) break;
+            }
+        }
+    }
+
     // --- REJESTRACJA PLACEHOLDERAPI ---
 
     @Override
