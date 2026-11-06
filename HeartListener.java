@@ -1,79 +1,60 @@
 package pl.galaxy.serca;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-public final class HeartListener implements Listener {
+import java.util.HashMap;
+import java.util.Map;
 
+public final class ShopGui {
     private final GalaxySerca plugin;
 
-    public HeartListener(GalaxySerca plugin) {
+    public ShopGui(GalaxySerca plugin) {
         this.plugin = plugin;
     }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_GIANT && 
-            event.getAction() != Action.RIGHT_CLICK_BLOCK && 
-            event.getAction() != Action.RIGHT_CLICK_AIR) {
-            return;
-        }
+    public static final class Holder implements InventoryHolder {
+        private final Map<Integer, HeartType> slots = new HashMap<>();
+        private Inventory inventory;
 
-        Player player = event.getPlayer();
-        ItemStack item = event.getItem();
+        public Map<Integer, HeartType> slots() { return slots; }
+        @Override public Inventory getInventory() { return inventory; }
+    }
 
-        HeartManager hm = plugin.hearts();
-        HeartType type = hm.typeOf(item);
+    public void open(Player p) {
+        Holder holder = new Holder();
+        Inventory inv = Bukkit.createInventory(holder, 27, Text.parse("&8Panel Zarządzania Sercami"));
+        holder.inventory = inv;
 
-        if (type == null) {
-            return;
-        }
+        // Slot 11: Zwykłe serce (id: 1)
+        ItemStack normalHeart = plugin.hearts().create(HeartType.NORMAL, 1);
+        inv.setItem(11, normalHeart);
+        holder.slots.put(11, HeartType.NORMAL);
 
-        event.setCancelled(true);
+        // Slot 15: Anarchiczne serce (id: 2)
+        ItemStack anarchicHeart = plugin.hearts().create(HeartType.ANARCHIC, 1);
+        inv.setItem(15, anarchicHeart);
+        holder.slots.put(15, HeartType.ANARCHIC);
 
-        double currentMaxHP = hm.getMax(player);
-        int currentHearts = (int) (currentMaxHP / 2.0);
+        p.openInventory(inv);
+    }
+
+    public void handleClick(Player p, int slot, Holder holder) {
+        HeartType type = holder.slots().get(slot);
+        if (type == null) return;
+
+        // Tworzymy serce wybranego typu i dodajemy bezpośrednio do ekwipunku gracza
+        ItemStack heartItem = plugin.hearts().create(type, 1);
+        Map<Integer, ItemStack> left = p.getInventory().addItem(heartItem);
         
-        int normalLimit = hm.limit(HeartType.NORMAL); // domyślnie 30
-        int anarchicLimit = hm.limit(HeartType.ANARCHIC); // domyślnie 40
-
-        // --- LOGIKA DLA ZWYKŁEGO SERCA (ID 1) ---
-        if (type == HeartType.NORMAL) {
-            if (currentHearts >= normalLimit) {
-                plugin.subtitle(player, "limit-reached");
-                plugin.sound(player, "fail");
-                return;
-            }
-        }
-        
-        // --- LOGIKA DLA ANARCHICZNEGO SERCA (ID 2) ---
-        else if (type == HeartType.ANARCHIC) {
-            // Jeśli gracz ma mniej niż limit zwykłego serca (np. poniżej 30), blokujemy użycie ana!
-            if (currentHearts < normalLimit) {
-                // Możesz dodać klucz w configu np. "anarchic-too-early" lub użyć istniejącego komunikatu
-                plugin.subtitle(player, "heart-blocked"); 
-                plugin.sound(player, "fail");
-                return;
-            }
-            // Jeśli osiągnął już maksymalny limit anarchiczny (40)
-            if (currentHearts >= anarchicLimit) {
-                plugin.subtitle(player, "limit-reached");
-                plugin.sound(player, "fail");
-                return;
-            }
+        // Jeśli ekwipunek jest pełny, upuść na ziemię
+        for (ItemStack it : left.values()) {
+            p.getWorld().dropItemNaturally(p.getLocation(), it);
         }
 
-        // Zabieramy dokładnie 1 sztukę przedmiotu z ekwipunku
-        item.setAmount(item.getAmount() - 1);
-
-        // Dodajemy równe 1 całe serce = 2 punkty zdrowia (HP)
-        hm.setMax(player, currentMaxHP + 2.0);
-
-        plugin.subtitle(player, "heart-used");
-        plugin.sound(player, "success");
+        plugin.sound(p, "success");
     }
 }
