@@ -1,5 +1,5 @@
-# GalaxySerca - konfiguracja
-# 1 "serce" = 1 punkt maksymalnego zdrowia (tak jak w skrypcie)
+# GalaxySerca - konfiguracja główna
+# 1 serce = 2 punkty zdrowia (HP)
 
 settings:
   min-withdraw-health: 10
