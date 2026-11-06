@@ -101,8 +101,8 @@ public final class HeartManager extends PlaceholderExpansion {
             return false;
         }
 
-        // Zwykłe daje 10 serc, anarchiczne też przyjmujemy dodaje 10 (lub dostosuj pod siebie)
-        int addAmount = 10; 
+        // Pojedyncze serce dodaje dokładnie 1 serduszko (2 punkty HP)
+        int addAmount = 1; 
         int newHearts = Math.min(currentHearts + addAmount, maxLimit);
         
         setMax(player, newHearts * 2.0);
