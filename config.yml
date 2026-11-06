@@ -27,21 +27,8 @@ death:
     enabled: true
     threshold: 30
   drop-heart: true
-  ban-command: "tempban %player% 12h brak serc!"
+  ban-command: "tempban %player% 12h Brak serc!"
   reset-health-after-ban: 10
-
-set-serc:
-  messages:
-    set-success: "&aUstawiono &f{amount} serc &adla gracza &f{player}&a."
-    usage: "&cUżycie: /setserca <gracz> <serca>"
-    invalid-number: "&cPodana wartość musi być liczbą!"
-
-reset-serc:
-  default-hearts: 30
-  messages:
-    reset-success-single: "&aZresetowano serca do &f{amount} &adla gracza &f{player}&a."
-    reset-success-all: "&aZresetowano serca do &f{amount} &adla wszystkich graczy online poniżej limitu!"
-    usage: "&cUżycie: /resetserca <gracz|all>"
 
 sounds:
   success: "entity.villager.celebrate"
@@ -52,38 +39,12 @@ messages:
   only-player: "&cTa komenda jest tylko dla graczy!"
   no-permission: "&cNie masz permisji!"
   reloaded: "&aPrzeładowano konfigurację!"
-  usage-give: "&cUżycie: /galaxysercagive <normal|anarchic> [ilosc] [gracz]"
+  usage-give: "&cUżycie: /galaxyserca-give <normal|anarchic> [ilosc] [gracz]"
   player-not-found: "&cNie znaleziono gracza!"
   given: "&aDano &f{amount}x {type} &adla &f{player}&a."
   withdraw-not-enough: "&cBrak wystarczającej ilości serc do wypłaty! &f(Minimum {min})"
   withdraw-no-space: "&cNie masz miejsca w ekwipunku!"
   withdraw-success: "&aWypłacono jedno serce!"
-  heart-used: "&7Otrzymales &f+ 1 serce&7!"
+  heart-used: "&7Otrzymałeś &f+ 1 serce&7!"
   limit-reached: "&7Nie możesz tego używać! Limit serc wynosi &f{limit}"
-  purchase-success: "&aOtrzymano serce!"
-  purchase-fail: "&7Nie posiadasz wystarczajaco serc! &f/wyplacserce"
-  purchase-error: "&cBłąd konfiguracji przedmiotu!"
   heart-blocked: "&cSerc nie można tu używać!"
-
-shop:
-  title: "&8GalaxySerca &7- panel admina"
-  rows: 3
-  back-button:
-    enabled: false
-  items:
-    serce_zwykle:
-      slot: 11
-      cost: 0
-      type: HEART
-      permission: galaxyserca.admin
-      footer:
-        - ""
-        - " &8» &aKliknij &2LEWYM&a, aby odebrać!"
-    serce_anarchiczne:
-      slot: 15
-      cost: 0
-      type: ANARCHIC_HEART
-      permission: galaxyserca.admin
-      footer:
-        - ""
-        - " &8» &aKliknij &2LEWYM&a, aby odebrać!"
