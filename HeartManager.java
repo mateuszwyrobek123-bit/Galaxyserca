@@ -107,6 +107,26 @@ public final class HeartManager extends PlaceholderExpansion {
         }
     }
 
+    // --- SPRAWDZANIE I KONTROLA LIMITÓW DLA LISTENERÓW ---
+
+    public boolean canUse(@NotNull Player player, @NotNull HeartType type) {
+        double currentMaxHP = getMax(player);
+        int currentHearts = (int) (currentMaxHP / 2.0);
+        
+        int normalLimit = limit(HeartType.NORMAL);     // np. 30
+        int anarchicLimit = limit(HeartType.ANARCHIC); // np. 40
+
+        if (type == HeartType.NORMAL) {
+            return currentHearts < normalLimit;
+        } else if (type == HeartType.ANARCHIC) {
+            if (currentHearts < normalLimit) {
+                return false; // Wymaga najpierw wymaksowania zwykłych serc
+            }
+            return currentHearts < anarchicLimit;
+        }
+        return false;
+    }
+
     // --- METODY WYMAGANE PRZEZ SHOPGUI ---
 
     public int count(@NotNull Player player, @NotNull HeartType type) {
