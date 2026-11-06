@@ -1,5 +1,6 @@
 package pl.galaxy.serca;
 
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -9,8 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
-public final class HeartManager {
+public final class HeartManager extends PlaceholderExpansion {
     private final GalaxySerca plugin;
     private final NamespacedKey key;
 
@@ -29,7 +31,6 @@ public final class HeartManager {
             int cmd = s.getInt("custom-model-data", 0);
             if (cmd > 0) ItemBuilder.setCustomModelData(meta, cmd);
         }
-        // znacznik w PDC - po nim rozpoznajemy prawdziwe serce
         meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, type.id());
         item.setItemMeta(meta);
         return item;
@@ -85,5 +86,39 @@ public final class HeartManager {
         if (a == null) return;
         a.setBaseValue(Math.max(1, value));
         if (p.getHealth() > a.getValue()) p.setHealth(a.getValue());
+    }
+
+    // --- Metody PlaceholderAPI wewnątrz HeartManager ---
+
+    @Override
+    public @NotNull String getIdentifier() {
+        return "galaxyserca";
+    }
+
+    @Override
+    public @NotNull String getAuthor() {
+        return "youngmateo";
+    }
+
+    @Override
+    public @NotNull String getVersion() {
+        return "1.0.0";
+    }
+
+    @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
+    public String onPlaceholderRequest(Player player, @NotNull String params) {
+        if (player == null) return "";
+
+        if (params.equalsIgnoreCase("hearts") || params.isEmpty()) {
+            int hearts = (int) (getMax(player) / 2.0);
+            return String.valueOf(hearts);
+        }
+
+        return null;
     }
 }
