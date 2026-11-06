@@ -1,45 +1,38 @@
 name: GalaxySerca
-version: ${project.version}
+version: 1.0.0
 main: pl.galaxy.serca.GalaxySerca
 api-version: '1.21'
-author: Galaxy
-description: System serc z sklepem GUI
+author: youngmateo
+description: System serc z zarzadzaniem zdrowiem
 
 commands:
   wyplacserca:
-    description: Wypłaca jedno serce
+    description: Wypłaca jedno serce do ekwipunku
     aliases: [wyplacserce]
     permission: galaxyserca.withdraw
-  panel:
-    description: Otwiera panel serc
-    aliases: [galaxysercagui, galaxyserca-gui]
+  galaxyserca-gui:
+    description: Otwiera panel zarządzania
+    aliases: [panel, galaxysercagui]
     permission: galaxyserca.admin
-  galaxysercareload:
-    description: Przeładowuje konfigurację
-    aliases: [galaxyserca-reload]
+  galaxyserca-reload:
+    description: Przeładowuje konfigurację pluginu
+    aliases: [galaxysercareload]
     permission: galaxyserca.reload
-  galaxysercagive:
-    description: Daje serca graczowi
-    aliases: [galaxyserca-give, galaxygive]
-    usage: /galaxysercagive <normal|anarchic> [ilosc] [gracz]
+  galaxyserca-give:
+    description: Daje serca wybranemu graczowi
+    usage: /galaxyserca-give <normal|anarchic> [ilosc] [gracz]
     permission: galaxyserca.give
-  setserca:
-    description: Ustawia liczbę serc gracza
-    aliases: [set-serca]
-    permission: galaxyserca.admin
-  resetserca:
-    description: Resetuje serca gracza lub wszystkich
-    aliases: [reset-serca]
-    usage: /resetserca <gracz|all>
-    permission: galaxyserca.admin
 
 permissions:
   galaxyserca.admin:
-    description: Pełny dostęp admina
+    description: Dostęp do panelu administracyjnego
     default: op
   galaxyserca.withdraw:
+    description: Pozwala wypłacać serca
     default: true
   galaxyserca.reload:
+    description: Pozwala przeładować config
     default: op
   galaxyserca.give:
+    description: Pozwala rozdawać serca
     default: op
