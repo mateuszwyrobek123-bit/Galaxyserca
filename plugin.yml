@@ -10,28 +10,30 @@ commands:
     description: Wypłaca jedno serce
     aliases: [wyplacserce]
     permission: galaxyserca.withdraw
-  galaxyserca-gui:
+  galaxysercagui:
     description: Panel admina z sercami
     permission: galaxyserca.admin
-  galaxyserca-reload:
+  galaxysercareload:
     description: Przeładowuje konfigurację
     permission: galaxyserca.reload
-  galaxyserca-give:
+  galaxysercagive:
     description: Daje serca graczowi
-    usage: /galaxyserca-give <normal|anarchic> [ilosc] [gracz]
+    usage: /galaxysercagive <normal|anarchic> [ilosc] [gracz]
     permission: galaxyserca.give
-  galaxyserca-set:
+  setserca:
     description: Ustawia liczbę serc gracza
-    usage: /galaxyserca-set <gracz> <serca>
+    aliases: [serca-set, galaxyserca-set]
+    usage: /setserca <gracz> <serca>
     permission: galaxyserca.admin
-  galaxyserca-reset:
+  resetserca:
     description: Resetuje serca gracza lub wszystkich
-    usage: /galaxyserca-reset <gracz|all>
+    aliases: [reset-serc, galaxyserca-reset]
+    usage: /resetserca <gracz|all>
     permission: galaxyserca.admin
 
 permissions:
   galaxyserca.admin:
-    description: Pełny dostęp admina (darmowe serca w GUI, reload, give, set, reset)
+    description: Pełny dostęp admina
     default: op
     children:
       galaxyserca.reload: true
