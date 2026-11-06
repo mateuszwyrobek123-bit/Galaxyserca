@@ -23,30 +23,25 @@ death:
   enabled: true
   lightning: true
   lose-health: 1
-  # Tryb ochrony: true = gracz mający "threshold" serc lub mniej (domyślnie do 30 włącznie)
-  # NIE traci serc po śmierci (i nie wypada mu serce). Tracą tylko ci, którzy mają więcej (anarchiczne).
-  # false = serca tracą wszyscy.
   no-loss-below:
     enabled: true
     threshold: 30
   drop-heart: true
-  ban-command: "tempban %player% 12h brak serc!"   # wymaga pluginu z /tempban (np. EssentialsX)
+  ban-command: "tempban %player% 12h brak serc!"
   reset-health-after-ban: 10
 
-# Sekcja dedykowana komendzie ustawiania serc (/serca-set / galaxyserca-set)
 set-serc:
   messages:
     set-success: "&aUstawiono &f{amount} serc &adla gracza &f{player}&a."
-    usage: "&cUżycie: /serca-set <gracz> <serca>"
+    usage: "&cUżycie: /setserca <gracz> <serca>"
     invalid-number: "&cPodana wartość musi być liczbą!"
 
-# Sekcja dedykowana komendzie resetowania serc (/reset-serc / galaxyserca-reset)
 reset-serc:
   default-hearts: 30
   messages:
     reset-success-single: "&aZresetowano serca do &f{amount} &adla gracza &f{player}&a."
-    reset-success-all: "&aZresetowano serca do &f{amount} &adla wszystkich graczy online!"
-    usage: "&cUżycie: /reset-serc <gracz|all>"
+    reset-success-all: "&aZresetowano serca do &f{amount} &adla wszystkich graczy online poniżej limitu!"
+    usage: "&cUżycie: /resetserca <gracz|all>"
 
 sounds:
   success: "entity.villager.celebrate"
@@ -57,13 +52,12 @@ messages:
   only-player: "&cTa komenda jest tylko dla graczy!"
   no-permission: "&cNie masz permisji!"
   reloaded: "&aPrzeładowano konfigurację!"
-  usage-give: "&cUżycie: /galaxyserca-give <normal|anarchic> [ilosc] [gracz]"
+  usage-give: "&cUżycie: /galaxysercagive <normal|anarchic> [ilosc] [gracz]"
   player-not-found: "&cNie znaleziono gracza!"
   given: "&aDano &f{amount}x {type} &adla &f{player}&a."
   withdraw-not-enough: "&cBrak wystarczającej ilości serc do wypłaty! &f(Minimum {min})"
   withdraw-no-space: "&cNie masz miejsca w ekwipunku!"
   withdraw-success: "&aWypłacono jedno serce!"
-  # tytuły (subtitle)
   heart-used: "&7Otrzymales &f+ 1 serce&7!"
   limit-reached: "&7Nie możesz tego używać! Limit serc wynosi &f{limit}"
   purchase-success: "&aOtrzymano serce!"
@@ -71,8 +65,6 @@ messages:
   purchase-error: "&cBłąd konfiguracji przedmiotu!"
   heart-blocked: "&cSerc nie można tu używać!"
 
-# GUI dla adminów (/galaxyserca-gui) - kliknięcie serca daje je do ekwipunku.
-# Nie ma tu żadnego sklepu ani kosztów.
 shop:
   title: "&8GalaxySerca &7- panel admina"
   rows: 3
