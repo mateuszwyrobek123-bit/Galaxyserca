@@ -88,7 +88,6 @@ public final class HeartManager extends PlaceholderExpansion {
         if (p.getHealth() > a.getValue()) p.setHealth(a.getValue());
     }
 
-    // --- Dynamiczne użycie serca z uwzględnieniem limitu z configu ---
     public boolean useHeart(Player player, ItemStack item) {
         HeartType type = typeOf(item);
         if (type == null) return false;
@@ -103,21 +102,16 @@ public final class HeartManager extends PlaceholderExpansion {
             return false;
         }
 
-        // 1 użycie przedmiotu daje dokładnie 1 pełne serce (2 punkty zdrowia)
         int addHearts = 1; 
         int newHearts = Math.min(currentHearts + addHearts, maxLimit);
         
         setMax(player, newHearts * 2.0);
-
-        // Usuwamy 1 sztukę z ręki
         item.setAmount(item.getAmount() - 1);
         
         String successMsg = plugin.getConfig().getString("messages.heart-used", "&7Otrzymales &f+ 1 serce&7!");
         player.sendMessage(Text.parse(successMsg));
         return true;
     }
-
-    // --- Metody PlaceholderAPI wewnątrz HeartManager ---
 
     @Override
     public @NotNull String getIdentifier() {
