@@ -3,61 +3,72 @@ package pl.galaxy.serca;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Map;
+public final class HeartListener implements Listener {
 
-public final class ShopListener implements Listener {
     private final GalaxySerca plugin;
 
-    public ShopListener(GalaxySerca plugin) {
+    public HeartListener(GalaxySerca plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player p)) return;
-        InventoryHolder holder = event.getInventory().getHolder();
-
-        if (holder instanceof ShopGui.Holder guiHolder) {
-            event.setCancelled(true);
-            int slot = event.getRawSlot();
-            
-            HeartType type = guiHolder.slots.get(slot);
-            if (type == null) return;
-
-            HeartManager hm = plugin.hearts();
-            double currentMaxHP = hm.getMax(p);
-            int currentHearts = (int) (currentMaxHP / 2.0);
-            
-            int normalLimit = hm.limit(HeartType.NORMAL);     // 30
-            int anarchicLimit = hm.limit(HeartType.ANARCHIC); // 40
-
-            // Zabezpieczenie przed wypłacaniem ponad limit z panelu
-            if (type == HeartType.NORMAL && currentHearts >= normalLimit) {
-                plugin.subtitle(p, "limit-reached");
-                plugin.sound(p, "fail");
-                return;
-            }
-
-            if (type == HeartType.ANARCHIC && currentHearts >= anarchicLimit) {
-                plugin.subtitle(p, "limit-reached");
-                plugin.sound(p, "fail");
-                return;
-            }
-
-            // Tworzymy serce wybranego typu i dodajemy bezpośrednio do ekwipunku gracza
-            ItemStack heartItem = hm.create(type, 1);
-            Map<Integer, ItemStack> left = p.getInventory().addItem(heartItem);
-            
-            // Jeśli ekwipunek jest pełny, upuść na ziemię
-            for (ItemStack it : left.values()) {
-                p.getWorld().dropItemNaturally(p.getLocation(), it);
-            }
-
-            plugin.sound(p, "success");
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && 
+            event.getAction() != Action.RIGHT_CLICK_AIR) {
+            return;
         }
+
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        HeartManager hm = plugin.hearts();
+        HeartType type = hm.typeOf(item);
+
+        if (type == null) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        double currentMaxHP = hm.getMax(player);
+        int currentHearts = (int) (currentMaxHP / 2.0);
+        
+        int normalLimit = hm.limit(HeartType.NORMAL);     // 30
+        int anarchicLimit = hm.limit(HeartType.ANARCHIC); // 40
+
+        // Zwykłe serce (id: 1)
+        if (type == HeartType.NORMAL) {
+            if (currentHearts >= normalLimit) {
+                plugin.subtitle(player, "limit-reached");
+                plugin.sound(player, "fail");
+                return;
+            }
+        }
+        // Anarchiczne serce (id: 2)
+        else if (type == HeartType.ANARCHIC) {
+            if (currentHearts < normalLimit) {
+                plugin.subtitle(player, "heart-blocked");
+                plugin.sound(player, "fail");
+                return;
+            }
+            if (currentHearts >= anarchicLimit) {
+                plugin.subtitle(player, "limit-reached");
+                plugin.sound(player, "fail");
+                return;
+            }
+        }
+
+        // Zabieramy 1 sztukę przedmiotu z ekwipunku
+        item.setAmount(item.getAmount() - 1);
+
+        // Dodajemy równe 1 całe serce = 2 punkty zdrowia (HP)
+        hm.setMax(player, currentMaxHP + 2.0);
+
+        plugin.subtitle(player, "heart-used");
+        plugin.sound(player, "success");
     }
 }
