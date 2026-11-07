@@ -9,12 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Uloz pliki w foldery
+      - name: Uloz pliki i usun stare
         run: |
           mkdir -p src/main/java/pl/galaxy/serca src/main/resources
-          mv -f ./*.java src/main/java/pl/galaxy/serca/ || true
-          mv -f config.yml src/main/resources/ || true
-          mv -f plugin.yml src/main/resources/ || true
+          if [ -f GalaxySerca.java ]; then cp GalaxySerca.java src/main/java/pl/galaxy/serca/GalaxySerca.java; fi
+          if [ -f plugin.yml ]; then cp plugin.yml src/main/resources/plugin.yml; fi
+          find src/main/java -name '*.java' ! -name GalaxySerca.java -delete
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
