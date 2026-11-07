@@ -70,7 +70,6 @@ settings:
   min-withdraw-health: 10     # nie mozna wyplacic, jesli gracz ma <= tyle serc
   normal-limit: 30            # limit zwyklych serc
   anarchic-limit: 40          # limit anarchicznych serc
-  anarchic-requires-normal-limit: true   # anarchiczne serce mozna uzyc dopiero po osiagnieciu limitu zwyklych
 
 hearts:
   normal:
@@ -123,8 +122,7 @@ messages:
   given: "&aDano &f{amount}x {type} &adla &f{player}&a."
   withdraw-not-enough: "&cBrak wystarczającej ilości serc do wypłaty! &f(Minimum {min})"
   withdraw-no-space: "&cNie masz miejsca w ekwipunku!"
-  withdraw-success: "&aWypłacono serca: &f{amount}&a!"
-  usage-withdraw: "&cUżycie: /wyplacserca [ilosc]"
+  withdraw-success: "&aWypłacono jedno serce!"
   heart-used: "&7Otrzymales &f+ 1 serce&7!"
   limit-reached: "&7Nie możesz tego używać! Limit serc wynosi &f{limit}"
   gui-received: "&aOtrzymano serce!"
@@ -313,9 +311,8 @@ messages:
         if (typeOf(stack) != type) return;
 
         double max = getHearts(p);
-        if (type == HeartType.ANARCHIC
-                && getConfig().getBoolean("settings.anarchic-requires-normal-limit", true)
-                && max < limit(HeartType.NORMAL)) {
+        // anarchiczne serce mozna uzyc dopiero od limitu zwyklych serc (30) w gore - zawsze, bez opcji w configu
+        if (type == HeartType.ANARCHIC && max < limit(HeartType.NORMAL)) {
             subtitle(p, "heart-blocked");
             sound(p, "fail");
             return;
@@ -539,22 +536,15 @@ messages:
             send(sender, "only-player");
             return;
         }
-        int wanted = 1;
-        if (args.length >= 1) {
-            try {
-                wanted = Math.max(1, Integer.parseInt(args[0]));
-            } catch (NumberFormatException ex) {
-                send(p, "usage-withdraw");
-                return;
-            }
-        }
+        int wanted = 1; // zawsze jedno serce na komende
         int min = getConfig().getInt("settings.min-withdraw-health", 10);
 
         int done = 0;
         boolean noSpace = false;
         for (int i = 0; i < wanted; i++) {
             double max = getHearts(p);
-            if (max <= min) break;
+            // zawsze musi zostac min. 1 serce - inaczej serce wyplacone, a nic nie zabrane (duplikacja)
+            if (max <= min || max - 1 < 1) break;
             HeartType type = max > limit(HeartType.NORMAL) ? HeartType.ANARCHIC : HeartType.NORMAL;
 
             // najpierw dodajemy przedmiot, dopiero potem zabieramy zdrowie - nic nie przepada
