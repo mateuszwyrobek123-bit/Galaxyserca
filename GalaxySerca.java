@@ -70,6 +70,7 @@ settings:
   min-withdraw-health: 10     # nie mozna wyplacic, jesli gracz ma <= tyle serc
   normal-limit: 30            # limit zwyklych serc
   anarchic-limit: 40          # limit anarchicznych serc
+  anarchic-requires-normal-limit: true   # anarchiczne serce mozna uzyc dopiero po osiagnieciu limitu zwyklych
 
 hearts:
   normal:
@@ -100,7 +101,7 @@ death:
 
 # Panel admina /galaxyserca-gui (kliknij serce LEWYM, a trafi do ekwipunku)
 gui:
-  title: "&8GalaxySerca &7- panel admina"
+  title: "&8Panel Zarządzania Sercami"
   rows: 3
   normal-slot: 11
   anarchic-slot: 15
@@ -127,7 +128,8 @@ messages:
   heart-used: "&7Otrzymales &f+ 1 serce&7!"
   limit-reached: "&7Nie możesz tego używać! Limit serc wynosi &f{limit}"
   gui-received: "&aOtrzymano serce!"
-  heart-blocked: "&cSerc nie można tu używać!"
+  heart-blocked: "&cMusisz mieć najpierw 30 zwykłych serc, aby użyć anarchicznego!"
+  heart-denied: "&cSerc nie można tu używać!"
 """;
 
     // ------------------------------------------------------------------
@@ -311,6 +313,13 @@ messages:
         if (typeOf(stack) != type) return;
 
         double max = getHearts(p);
+        if (type == HeartType.ANARCHIC
+                && getConfig().getBoolean("settings.anarchic-requires-normal-limit", true)
+                && max < limit(HeartType.NORMAL)) {
+            subtitle(p, "heart-blocked");
+            sound(p, "fail");
+            return;
+        }
         int lim = limit(type);
         if (max >= lim) {
             subtitle(p, "limit-reached", "{limit}", String.valueOf(lim));
@@ -447,7 +456,7 @@ messages:
 
         if (involved) {
             e.setCancelled(true);
-            if (e.getWhoClicked() instanceof Player p) subtitle(p, "heart-blocked");
+            if (e.getWhoClicked() instanceof Player p) subtitle(p, "heart-denied");
         }
     }
 
