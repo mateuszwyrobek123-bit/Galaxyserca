@@ -5,7 +5,6 @@ settings:
   min-withdraw-health: 10          # nie można wypłacić, jeśli gracz ma <= tyle serc
   normal-limit: 30
   anarchic-limit: 40
-  anarchic-requires-normal-limit: true   # anarchiczne serce można użyć dopiero po zebraniu 30 zwykłych
 
 hearts:
   normal:
@@ -51,12 +50,11 @@ messages:
   no-permission: "&cNie masz permisji!"
   reloaded: "&aPrzeładowano konfigurację!"
   usage-give: "&cUżycie: /galaxyserca-give <normal|anarchic> [ilosc] [gracz]"
-  usage-withdraw: "&cUżycie: /wyplacserca [ilosc]"
   player-not-found: "&cNie znaleziono gracza!"
   given: "&aDano &f{amount}x {type} &adla &f{player}&a."
   withdraw-not-enough: "&cBrak wystarczającej ilości serc do wypłaty! &f(Minimum {min})"
   withdraw-no-space: "&cNie masz miejsca w ekwipunku!"
-  withdraw-success: "&aWypłacono serca: &f{amount}&a!"
+  withdraw-success: "&aWypłacono jedno serce!"
   heart-used: "&7Otrzymałeś &f+ 1 serce&7!"
   limit-reached: "&7Nie możesz tego używać! Limit serc wynosi &f{limit}"
   gui-received: "&aOtrzymano serce!"
