@@ -4,10 +4,12 @@ main: pl.galaxy.serca.GalaxySerca
 api-version: '1.21'
 author: youngmateo
 description: System serc z zarzadzaniem zdrowiem
+softdepend: [PlaceholderAPI]
 
 commands:
   wyplacserca:
-    description: Wypłaca jedno serce do ekwipunku
+    description: Wypłaca serca do ekwipunku
+    usage: /wyplacserca [ilosc]
     aliases: [wyplacserce]
     permission: galaxyserca.withdraw
   galaxyserca-gui:
@@ -25,8 +27,11 @@ commands:
 
 permissions:
   galaxyserca.admin:
-    description: Dostęp do panelu administracyjnego
+    description: Dostęp do panelu administracyjnego, reload i give
     default: op
+    children:
+      galaxyserca.reload: true
+      galaxyserca.give: true
   galaxyserca.withdraw:
     description: Pozwala wypłacać serca
     default: true
