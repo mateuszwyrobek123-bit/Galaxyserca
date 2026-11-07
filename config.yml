@@ -1,10 +1,11 @@
 # GalaxySerca - konfiguracja główna
-# 1 serce = 2 punkty zdrowia (HP)
+# 1 serce = 2 punkty zdrowia (HP). Zwykły gracz ma 10 serc, zakres 1-40.
 
 settings:
-  min-withdraw-health: 10
+  min-withdraw-health: 10          # nie można wypłacić, jeśli gracz ma <= tyle serc
   normal-limit: 30
   anarchic-limit: 40
+  anarchic-requires-normal-limit: true   # anarchiczne serce można użyć dopiero po zebraniu 30 zwykłych
 
 hearts:
   normal:
@@ -22,13 +23,23 @@ hearts:
 death:
   enabled: true
   lightning: true
-  lose-health: 1
+  lose-health: 1                   # ile serc traci gracz po śmierci
   no-loss-below:
     enabled: true
     threshold: 30
   drop-heart: true
   ban-command: "tempban %player% 12h Brak serc!"
-  reset-health-after-ban: 10
+  reset-health-after-ban: 10       # ile serc ma gracz po odbanowaniu
+
+# Panel admina /galaxyserca-gui (kliknij serce LEWYM, a trafi do ekwipunku)
+gui:
+  title: "&8Panel Zarządzania Sercami"
+  rows: 3
+  normal-slot: 11
+  anarchic-slot: 15
+  footer:
+    - ""
+    - " &8» &aKliknij &2LEWYM&a, aby odebrać!"
 
 sounds:
   success: "entity.villager.celebrate"
@@ -40,11 +51,14 @@ messages:
   no-permission: "&cNie masz permisji!"
   reloaded: "&aPrzeładowano konfigurację!"
   usage-give: "&cUżycie: /galaxyserca-give <normal|anarchic> [ilosc] [gracz]"
+  usage-withdraw: "&cUżycie: /wyplacserca [ilosc]"
   player-not-found: "&cNie znaleziono gracza!"
   given: "&aDano &f{amount}x {type} &adla &f{player}&a."
   withdraw-not-enough: "&cBrak wystarczającej ilości serc do wypłaty! &f(Minimum {min})"
   withdraw-no-space: "&cNie masz miejsca w ekwipunku!"
-  withdraw-success: "&aWypłacono jedno serce!"
+  withdraw-success: "&aWypłacono serca: &f{amount}&a!"
   heart-used: "&7Otrzymałeś &f+ 1 serce&7!"
   limit-reached: "&7Nie możesz tego używać! Limit serc wynosi &f{limit}"
+  gui-received: "&aOtrzymano serce!"
   heart-blocked: "&cMusisz mieć najpierw 30 zwykłych serc, aby użyć anarchicznego!"
+  heart-denied: "&cSerc nie można tu używać!"
