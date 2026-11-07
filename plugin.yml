@@ -8,8 +8,8 @@ softdepend: [PlaceholderAPI]
 
 commands:
   wyplacserca:
-    description: Wypłaca serca do ekwipunku
-    usage: /wyplacserca [ilosc]
+    description: Wypłaca jedno serce do ekwipunku
+    usage: /wyplacserca
     aliases: [wyplacserce]
     permission: galaxyserca.withdraw
   galaxyserca-gui:
